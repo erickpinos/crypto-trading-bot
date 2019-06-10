@@ -1,130 +1,10 @@
 from pycoingecko import CoinGeckoAPI
 import datetime
 import time
+from prices import *
 
 cg = CoinGeckoAPI()
 
-# Cryptocurrency prices
-usd_price = {
-    '01-05-2019': 1,
-    '02-05-2019': 1,
-    '03-05-2019': 1,
-    '04-05-2019': 1,
-    '05-05-2019': 1,
-    '06-05-2019': 1,
-    '07-05-2019': 1,
-    '08-05-2019': 1,
-    '09-05-2019': 1,
-    '10-05-2019': 1,
-    '11-05-2019': 1,
-    '12-05-2019': 1,
-    '13-05-2019': 1,
-    '14-05-2019': 1,
-    '15-05-2019': 1,
-    '16-05-2019': 1,
-    '17-05-2019': 1,
-    '18-05-2019': 1,
-    '19-05-2019': 1,
-    '20-05-2019': 1,
-    '21-05-2019': 1,
-    '22-05-2019': 1,
-    '23-05-2019': 1,
-    '24-05-2019': 1,
-    '25-05-2019': 1,
-    '26-05-2019': 1,
-    '27-05-2019': 1,
-    '28-05-2019': 1,
-    '29-05-2019': 1,
-    '30-05-2019': 1,
-    '31-05-2019': 1,
-    '01-06-2019': 1,
-    '02-06-2019': 1,
-    '03-06-2019': 1,
-    '04-06-2019': 1,
-    '05-06-2019': 1,
-    '06-06-2019': 1,
-    '07-06-2019': 1,
-    '08-06-2019': 1,
-    '09-06-2019': 1,
-    }
-
-bitcoin_price = {
-    '01-05-2019': 5292.803974562054,
-    '02-05-2019': 5354.5868001739655,
-    '03-05-2019': 5450.706620486424,
-    '04-05-2019': 5731.493099606555,
-    '05-05-2019': 5803.943309048437,
-    '06-05-2019': 5749.323780460327,
-    '07-05-2019': 5715.7571359661015,
-    '08-05-2019': 5841.053771273751,
-    '09-05-2019': 5957.856732858399,
-    '10-05-2019': 6168.268996398258,
-    '11-05-2019': 6370.233758607852,
-    '12-05-2019': 7258.261280655222,
-    '13-05-2019': 6953.75138858638,
-    '14-05-2019': 7805.98164948938,
-    '15-05-2019': 7990.055553534356,
-    '16-05-2019': 8192.223138952013,
-    '17-05-2019': 7875.913199526066,
-    '18-05-2019': 7343.371457162994,
-    '19-05-2019': 7300.655158341227,
-    '20-05-2019': 8168.730689783752,
-    '21-05-2019': 7976.851712899625,
-    '22-05-2019': 7958.365526075088,
-    '23-05-2019': 7665.79685383355,
-    '24-05-2019': 7861.812792465447,
-    '25-05-2019': 7977.244882467973,
-    '26-05-2019': 8037.627431860584,
-    '27-05-2019': 8631.080577844017,
-    '28-05-2019': 8816.03391493351,
-    '29-05-2019': 8726.978110456395,
-    '30-05-2019': 8650.677405968292,
-    '31-05-2019': 8310.891063057417,
-    '01-06-2019': 8575.646353354166,
-    '02-06-2019': 8554.261728092017,
-    '03-06-2019': 8743.705469134235,
-    '04-06-2019': 8173.632761796738,
-    '05-06-2019': 7683.636261419786,
-    '06-06-2019': 7812.448854732150,
-    '07-06-2019': 7821.123897094859,
-    '08-06-2019': 8036.108159122215,
-    '09-06-2019': 7705.539284064289,
-    }
-
-ethereum_price = {
-    '01-05-2019': 160.74469184721738,
-    '02-05-2019': 159.48931440238658,
-    '03-05-2019': 160.95718796104512,
-    '04-05-2019': 166.63211526803485,
-    '05-05-2019': 162.83631690744346,
-    '06-05-2019': 162.37013497277283,
-    '07-05-2019': 172.8283284518378,
-    '08-05-2019': 170.09589748059332,
-    '09-05-2019': 170.11063311538186,
-    '10-05-2019': 170.57549417946805,
-    '11-05-2019': 172.68209089135948,
-    '12-05-2019': 196.6901677286205,
-    '13-05-2019': 187.2720183708742,
-    '14-05-2019': 196.0761130134244,
-    '15-05-2019': 218.28460968764938,
-    '16-05-2019': 248.74500426984366,
-    '17-05-2019': 264.90012138907406,
-    '18-05-2019': 243.57049917993308,
-    '19-05-2019': 235.32720134101993,
-    '20-05-2019': 260.59698403060327,
-    '21-05-2019': 251.9614994995826,
-    '22-05-2019': 256.0830401834705,
-    '23-05-2019': 244.54946301361036,
-    '24-05-2019': 244.6460957973966,
-    '25-05-2019': 248.54526290535333,
-    '26-05-2019': 250.82036469745617,
-    '27-05-2019': 266.12218207843597,
-    '28-05-2019': 273.40508817754096,
-    '29-05-2019': 271.227867157993,
-    '30-05-2019': 268.7857564563058,
-    '31-05-2019': 255.37736314606394,
-    '01-06-2019': 268.12603920482644,
-    }
 
 
 # Useful functions
@@ -140,7 +20,7 @@ def get_prices(coin,start_date_str,end_date_str):
     date = start_date
     
     # Construct the dictionary
-    print(coin + '_price = {')
+    print(coin + '_prices = {')
 
     while date != end_date + datetime.timedelta(days=1):
         date_str = date.strftime("%d-%m-%Y")
@@ -152,7 +32,7 @@ def get_prices(coin,start_date_str,end_date_str):
         date += datetime.timedelta(days=1)
         time.sleep(1)
  
-    print("     }")
+    print("   }")
 
 # Iterate & print the dict
 def print_dict(coin, date_str):
@@ -167,31 +47,87 @@ def run_strategy_bnh(portfolio,start_date_str,end_date_str):
     start_date = datetime.datetime.strptime(start_date_str, '%d-%m-%Y')
     end_date = datetime.datetime.strptime(end_date_str, '%d-%m-%Y') 
     date = start_date
-
-    balance = 1000
-    portfolio_value = balance
     
-    print("Starting portfolio value: " + format(portfolio_value))
- 
+
+    portfolio = rebalance(portfolio, date)
+
     while date != end_date + datetime.timedelta(days=1):
         portfolio_value = 0
         date_str = date.strftime("%d-%m-%Y")
-        print("Day " + format(day) + ": " + date_str)
+        #print("Day " + format(day) + ": " + date_str)
 
         for key in portfolio:
             balance = portfolio.get(key).get('balance')
             prices = portfolio.get(key).get('prices')
             price = prices.get(date.strftime("%d-%m-%Y"))
             value = balance * price
-            print("- " + format(key) + " balance: " + format(balance))
-            print("- " + format(key) + " price: " + format(price))
-            print("- " + format(key) + " value: " + format(value))
+#            print("- " + format(key) + " balance: " + format(balance))
+#            print("- " + format(key) + " price: " + format(price))
+#            print("- " + format(key) + " value: " + format(value))
             portfolio_value += value
 
-        print("- Total portfolio value: ", portfolio_value, "USD")
-        print("\n")
+        #print("- Total portfolio value: ", portfolio_value, "USD")
+        #print("\n")
         date = date + datetime.timedelta(days=1)
         day += 1
+    return portfolio_value
+
+def get_portfolio_value(portfolio, date):
+    portfolio_value = 0
+
+    for key in portfolio:
+        balance = portfolio.get(key).get('balance')
+        prices = portfolio.get(key).get('prices')
+        price = prices.get(date.strftime("%d-%m-%Y"))
+        value = balance * price
+
+        portfolio[key]['value'] = value
+        portfolio_value += value
+
+    return portfolio_value
+
+def rebalance(portfolio, date):
+
+    portfolio_value = 0
+    
+    # Get total value of portfolio
+    portfolio_value = get_portfolio_value(portfolio, date)
+    print("- Total portfolio value is " + format(portfolio_value))
+
+    for key in portfolio:
+
+        #Before rebalance
+        percentage = portfolio.get(key).get('percentage')
+        balance = portfolio.get(key).get('balance')
+        prices = portfolio.get(key).get('prices')
+        value = portfolio.get(key).get('value')
+        price = prices.get(date.strftime("%d-%m-%Y"))
+#        print("- " + format(key) + " balance: " + format(balance))
+#        print("- " + format(key) + " price: " + format(price))
+#        print("- " + format(key) + " value: " + format(value))
+
+        target_value = portfolio_value * percentage
+        print("- Target value is", target_value)
+
+        #Rebalance
+        difference = target_value - value
+        portfolio[key]['difference'] = difference
+        #print("- " + format(key) + " difference: " + format(difference))
+
+        change = difference / price
+        portfolio[key]['balance'] += change
+        #print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
+
+        balance = portfolio.get(key).get('balance')
+        portfolio[key]['value'] = balance * price
+        value = portfolio.get(key).get('value')
+        portfolio[key]['difference'] = 0
+        #print("- " + key + " value: " + format(value))
+
+    print("- Total portfolio value: ", portfolio_value, "USD")
+    print("\n")
+
+    return portfolio
 
 # Rebalance strategy
 def run_strategy_rebalance(portfolio,start_date_str,end_date_str):
@@ -210,76 +146,111 @@ def run_strategy_rebalance(portfolio,start_date_str,end_date_str):
         date_str = date.strftime("%d-%m-%Y")
         print("Day " + format(day) + ": " + date_str)
 
-        # Get total value
-        portfolio_value = 0
-        for key in portfolio:
-            balance = portfolio.get(key).get('balance')
-            prices = portfolio.get(key).get('prices')
-            price = prices.get(date.strftime("%d-%m-%Y"))
-            value = balance * price
-            print("- " + format(key) + " balance: " + format(balance))
-            print("- " + format(key) + " price: " + format(price))
-            print("- " + format(key) + " value: " + format(value))
-
-            portfolio[key]['value'] = value
-            portfolio_value += value
-
-        print("- Total portfolio value is " + format(portfolio_value))
-
-        for key in portfolio:
-
-            #Before rebalance
-            percentage = portfolio.get(key).get('percentage')
-            balance = portfolio.get(key).get('balance')
-            prices = portfolio.get(key).get('prices')
-            value = portfolio.get(key).get('value')
-            price = prices.get(date.strftime("%d-%m-%Y"))
-            print("- " + format(key) + " balance: " + format(balance))
-            print("- " + format(key) + " price: " + format(price))
-            print("- " + format(key) + " value: " + format(value))
-
-            target_value = portfolio_value * percentage
-            print("- Target value is", target_value)
-
-            #Rebalance
-            difference = target_value - value
-            portfolio[key]['difference'] = difference
-            print("- " + format(key) + " difference: " + format(difference))
-
-            change = difference / price
-            portfolio[key]['balance'] += change
-            print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
-
-            balance = portfolio.get(key).get('balance')
-            portfolio[key]['value'] = balance * price
-            value = portfolio.get(key).get('value')
-            portfolio[key]['difference'] = 0
-            print("- " + key + " value: " + format(value))
-
-        print("- Total portfolio value: ", portfolio_value, "USD")
-        print("\n")
+        portfolio = rebalance(portfolio, date)
 
         date = date + datetime.timedelta(days=1)
         day += 1
+
+    portfolio_value = get_portfolio_value(portfolio, date)
+    return portfolio_value
 
 # Run the strategy
 def run_strategy(portfolio,start_date_str,end_date_str, strategy):
     
     if strategy == 'bnh':
-        run_strategy_bnh(portfolio,start_date_str,end_date_str)
+        portfolio_value = run_strategy_bnh(portfolio,start_date_str,end_date_str)
 
     if strategy == 'rebalance_daily':
-        run_strategy_rebalance(portfolio,start_date_str,end_date_str)
+        portfolio_value = run_strategy_rebalance(portfolio,start_date_str,end_date_str)
+
+    return portfolio_value
 
 start_date = '01-05-2019'
-end_date = '05-05-2019'
+end_date = '08-06-2019'
 
-portfolio = { 
-    'usd': {'percentage': .6, 'prices': usd_price, 'balance': 1000, 'value': 1000, 'difference': 0},
-    'bitcoin': {'percentage': .2, 'prices': bitcoin_price, 'balance': 0, 'value': 0, 'difference': 0},
-    'ethereum': {'percentage': .2, 'prices': ethereum_price, 'balance': 0, 'value': 0, 'difference': 0},
+portfolio_1 = { 
+    'usd': {'percentage': .25, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': .25, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'ethereum': {'percentage': .25, 'prices': ethereum_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'binance': {'percentage': .25, 'prices': binancecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'neo': {'percentage': .25, 'prices': neo_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'litecoin': {'percentage': .25, 'prices': litecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'ontology': {'percentage': .25, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'eos': {'percentage': .25, 'prices': eos_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'pundi-x': {'percentage': .25, 'prices': pundi_x_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'bitcoin-cash': {'percentage': .25, 'prices': bitcoin_cash_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'cardano': {'percentage': .25, 'prices': cardano_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'tron': {'percentage': .25, 'prices': tron_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'cosmos': {'percentage': .25, 'prices': cosmos_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'nem': {'percentage': .25, 'prices': nem_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'ravencoin': {'percentage': .25, 'prices': ravencoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'gxchain': {'percentage': .25, 'prices': gxchain_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'bittorrent-2': {'percentage': .25, 'prices': bittorrent_2_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'matic-network': {'percentage': .25, 'prices': matic_network_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'celer-network': {'percentage': .25, 'prices': celer_network_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'fetch-ai': {'percentage': .25, 'prices': fetch_ai_prices, 'balance': 0, 'value': 0, 'difference': 0},
     }
 
+portfolio_2 = { 
+    'usd': {'percentage': .5, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': .5, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+portfolio_3 = { 
+    'usd': {'percentage': 0, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': 1, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+portfolio_4 = { 
+    'usd': {'percentage': .5, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'ontology': {'percentage': .5, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+portfolio_5 = { 
+    'usd': {'percentage': 0, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'ontology': {'percentage': 1, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+portfolio_6 = { 
+    'usd': {'percentage': 0, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': 0.5, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'ontology': {'percentage': 0.5, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+portfolio_7 = { 
+    'usd': {'percentage': 0.25, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': 0.25, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'ontology': {'percentage': 0.25, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'binancecoin': {'percentage': 0.25, 'prices': binancecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+portfolio_8 = { 
+    'usd': {'percentage': 0, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'ontology': {'percentage': 0.5, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'binancecoin': {'percentage': 0.5, 'prices': binancecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
+def construct_portfolios():
+    portfolios = []
+    portfolio = {}
+
+    print("Coin permutations")
+
+    coins = ['usd',
+             'bitcoin',
+             'ethereum',
+             'binance',
+             ]
+
+    len(coins)
+
+    for coin in coins:
+        
+        portfolio[coin]['current_prices']
+
+    portfolios.append(portfolio)
+    print("x portfolios constructed")
+    
 def display_portfolio(portfolio):
     print("Portfolio:")
     for key in portfolio:
@@ -290,10 +261,53 @@ def display_portfolio(portfolio):
 
 # Run the simulation
 def run():
-    display_portfolio(portfolio)
-#    strategy_1 = run_strategy(portfolio, y, z, 'bnh')
-    strategy_2 = run_strategy(portfolio, start_date, end_date, 'rebalance_daily')
+    strategy_1 = run_strategy(portfolio_1, start_date, end_date, 'bnh')
+    strategy_2 = run_strategy(portfolio_1, start_date, end_date, 'rebalance_daily')
+    strategy_3 = run_strategy(portfolio_2, start_date, end_date, 'bnh')
+    strategy_4 = run_strategy(portfolio_2, start_date, end_date, 'rebalance_daily')
+    strategy_5 = run_strategy(portfolio_3, start_date, end_date, 'bnh')
+    strategy_6 = run_strategy(portfolio_3, start_date, end_date, 'rebalance_daily')
+    strategy_7 = run_strategy(portfolio_4, start_date, end_date, 'bnh')
+    strategy_8 = run_strategy(portfolio_4, start_date, end_date, 'rebalance_daily')
+    strategy_9 = run_strategy(portfolio_5, start_date, end_date, 'bnh')
+    strategy_10 = run_strategy(portfolio_5, start_date, end_date, 'rebalance_daily')
+    strategy_11 = run_strategy(portfolio_6, start_date, end_date, 'bnh')
+    strategy_12 = run_strategy(portfolio_6, start_date, end_date, 'rebalance_daily')
+    strategy_13 = run_strategy(portfolio_7, start_date, end_date, 'bnh')
+    strategy_14 = run_strategy(portfolio_7, start_date, end_date, 'rebalance_daily')
+    strategy_15 = run_strategy(portfolio_8, start_date, end_date, 'bnh')
+    strategy_16 = run_strategy(portfolio_8, start_date, end_date, 'rebalance_daily')
 
-#    print('buy and hold usd', strategy_1)
+    print('buy and hold usd', strategy_1)
     print('rebalance', strategy_2)
-    display_portfolio(portfolio)
+    print('buy and hold usd', strategy_3)
+    print('rebalance', strategy_4)
+    print('buy and hold usd', strategy_5)
+    print('rebalance', strategy_6)
+    print('buy and hold usd', strategy_7)
+    print('rebalance', strategy_8)
+    print('buy and hold usd', strategy_9)
+    print('rebalance', strategy_10)
+    print('buy and hold usd', strategy_11)
+    print('rebalance', strategy_12)
+    print('buy and hold usd', strategy_13)
+    print('rebalance', strategy_14)
+    print('buy and hold usd', strategy_15)
+    print('rebalance', strategy_16)
+
+
+def get_lots_of_prices():
+    start_date = '01-05-2019'
+    end_date = '09-06-2019'
+    coins = [
+        'ravencoin',
+        'gxchain',
+        'bittorrent-2',
+        'matic-network',
+        'celer-network',
+        'fetch-ai',
+        'harmony'
+        ]
+
+    for coin in coins:
+        get_prices(coin, start_date, end_date)
