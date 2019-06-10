@@ -162,7 +162,7 @@ def print_dict(coin, date_str):
         print(key, " = ", bitcoin.get(key))
 
 # Run the strategy
-def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date_str, strategy):
+def run_strategy(portfolio,start_date_str,end_date_str, strategy):
 
     day = 1
     start_date = datetime.datetime.strptime(start_date_str, '%d-%m-%Y')
@@ -265,17 +265,8 @@ def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date
 
     return balance
 
-balance = 1000
 start_date = '01-05-2019'
 end_date = '05-05-2019'
-
-day = 1
-
-x = 'bitcoin'
-y = '01-05-2019'
-z = '04-05-2019'
-#get_prices(x,y,z)
-
 
 portfolio = { 
     'usd': {'percentage': .6, 'prices': usd_price, 'balance': 1000, 'value': 1000, 'difference': 0},
@@ -294,24 +285,9 @@ def display_portfolio(portfolio):
 # Run the simulation
 def run():
     display_portfolio(portfolio)
-#    strategy_1 = run_strategy('usd',1,'bitcoin',0,y,z, 'bnh')
-#    strategy_2 = run_strategy('usd',0,'bitcoin',1,y,z, 'bnh')
-#    strategy_3 = run_strategy('usd',.5,'bitcoin',.5,y,z, 'bnh')
-    strategy_4 = run_strategy('usd',.5,'bitcoin',.5,y,z, 'rebalance_daily')
+#    strategy_1 = run_strategy(portfolio, y, z, 'bnh')
+    strategy_2 = run_strategy(portfolio, start_date, end_Date, 'rebalance_daily')
 
 #    print('buy and hold usd', strategy_1)
-#    print('buy and hold btc', strategy_2)
-#    print('buy and hold 50% usd and 50% btc', strategy_3)
-    print('rebalance 50% usd and 50% btc', strategy_4)
+    print('rebalance', strategy_2)
     display_portfolio(portfolio)
-
-
-
-#Buy and hold strategy
-#def buy_and_hold(coin_1,percentage_1,coin_2,percentage_2):
-    
-#Rebalance daily to equal weights
-
-#buy_and_hold('usd',1,'bitcoin',0)
-#buy_and_hold('usd',.5,'bitcoin',.5)
-#buy_and_hold('usd',0,'bitcoin',1)
