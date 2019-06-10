@@ -58,7 +58,7 @@ def run_strategy_bnh(portfolio,start_date_str,end_date_str):
 
         for key in portfolio:
             balance = portfolio.get(key).get('balance')
-            prices = portfolio.get(key).get('prices')
+            prices = coin_prices.get(key)
             price = prices.get(date.strftime("%d-%m-%Y"))
             value = balance * price
 #            print("- " + format(key) + " balance: " + format(balance))
@@ -77,7 +77,7 @@ def get_portfolio_value(portfolio, date):
 
     for key in portfolio:
         balance = portfolio.get(key).get('balance')
-        prices = portfolio.get(key).get('prices')
+        prices = coin_prices.get(key)
         price = prices.get(date.strftime("%d-%m-%Y"))
         value = balance * price
 
@@ -99,7 +99,7 @@ def rebalance(portfolio, date):
         #Before rebalance
         percentage = portfolio.get(key).get('percentage')
         balance = portfolio.get(key).get('balance')
-        prices = portfolio.get(key).get('prices')
+        prices = coin_prices.get(key)
         value = portfolio.get(key).get('value')
         price = prices.get(date.strftime("%d-%m-%Y"))
 #        print("- " + format(key) + " balance: " + format(balance))
@@ -107,7 +107,7 @@ def rebalance(portfolio, date):
 #        print("- " + format(key) + " value: " + format(value))
 
         target_value = portfolio_value * percentage
-        print("- Target value is", target_value)
+#        print("- Target value is", target_value)
 
         #Rebalance
         difference = target_value - value
@@ -169,26 +169,26 @@ start_date = '01-05-2019'
 end_date = '08-06-2019'
 
 portfolio_1 = { 
-    'usd': {'percentage': .25, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
-    'bitcoin': {'percentage': .25, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'ethereum': {'percentage': .25, 'prices': ethereum_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'binance': {'percentage': .25, 'prices': binancecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'neo': {'percentage': .25, 'prices': neo_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'litecoin': {'percentage': .25, 'prices': litecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'ontology': {'percentage': .25, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'eos': {'percentage': .25, 'prices': eos_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'pundi-x': {'percentage': .25, 'prices': pundi_x_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'bitcoin-cash': {'percentage': .25, 'prices': bitcoin_cash_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'cardano': {'percentage': .25, 'prices': cardano_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'tron': {'percentage': .25, 'prices': tron_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'cosmos': {'percentage': .25, 'prices': cosmos_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'nem': {'percentage': .25, 'prices': nem_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'ravencoin': {'percentage': .25, 'prices': ravencoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'gxchain': {'percentage': .25, 'prices': gxchain_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'bittorrent-2': {'percentage': .25, 'prices': bittorrent_2_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'matic-network': {'percentage': .25, 'prices': matic_network_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'celer-network': {'percentage': .25, 'prices': celer_network_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'fetch-ai': {'percentage': .25, 'prices': fetch_ai_prices, 'balance': 0, 'value': 0, 'difference': 0},
+    'usd': {'percentage': .25, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'ethereum': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'binance': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'neo': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'litecoin': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'ontology': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'eos': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'pundi-x': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'bitcoin-cash': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'cardano': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'tron': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'cosmos': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'nem': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'ravencoin': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'gxchain': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'bittorrent-2': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'matic-network': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'celer-network': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
+    'fetch-ai': {'percentage': .25, 'balance': 0, 'value': 0, 'difference': 0},
     }
 
 portfolio_2 = { 
@@ -232,9 +232,6 @@ portfolio_8 = {
 
 def construct_portfolios():
     portfolios = []
-    portfolio = {}
-
-    print("Coin permutations")
 
     coins = ['usd',
              'bitcoin',
@@ -242,23 +239,41 @@ def construct_portfolios():
              'binance',
              ]
 
-    len(coins)
+    percentage = 1 / len(coins)
 
-    for coin in coins:
+    # Create one asset portfolios
+    for main in coins:
+        portfolio = {}
+
+        for coin in coins:
+            portfolio[coin] = {}
+            portfolio[coin]['percentage'] = percentage
+            portfolio[coin]['balance'] = 0
+            portfolio[coin]['value'] = 0
+            portfolio[coin]['difference'] = 0
+
+        portfolio[main]['balance'] = 100
         
-        portfolio[coin]['current_prices']
+        portfolios.append(portfolio)
 
-    portfolios.append(portfolio)
-    print("x portfolios constructed")
+    print(format(len(portfolios)) + " portfolios constructed")
+
+    for portfolio in portfolios:
+        display_portfolio(portfolio)
+        print("\n")
+
+    return portfolios
+
     
 def display_portfolio(portfolio):
-    print("Portfolio:")
     for key in portfolio:
         print(key)
         for field in portfolio.get(key):
-            if field != 'prices':
-                print("- " + format(field) + ": " + format(portfolio.get(key).get(field)))
+            print("- " + format(field) + ": " + format(portfolio.get(key).get(field)))
 
+def run_2():
+    construct_portfolios()
+    
 # Run the simulation
 def run():
     strategy_1 = run_strategy(portfolio_1, start_date, end_date, 'bnh')

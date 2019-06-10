@@ -1,26 +1,3 @@
-portfolio_1 = { 
-    'usd': {'percentage': .25, 'prices': usd_prices, 'balance': 1000, 'value': 1000, 'difference': 0},
-    'bitcoin': {'percentage': .25, 'prices': bitcoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'ethereum': {'percentage': .25, 'prices': ethereum_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'binance': {'percentage': .25, 'prices': binancecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'neo': {'percentage': .25, 'prices': neo_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'litecoin': {'percentage': .25, 'prices': litecoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'ontology': {'percentage': .25, 'prices': ontology_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'eos': {'percentage': .25, 'prices': eos_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'pundi-x': {'percentage': .25, 'prices': pundi_x_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'bitcoin-cash': {'percentage': .25, 'prices': bitcoin_cash_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'cardano': {'percentage': .25, 'prices': cardano_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'tron': {'percentage': .25, 'prices': tron_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'cosmos': {'percentage': .25, 'prices': cosmos_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'nem': {'percentage': .25, 'prices': nem_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'ravencoin': {'percentage': .25, 'prices': ravencoin_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'gxchain': {'percentage': .25, 'prices': gxchain_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'bittorrent-2': {'percentage': .25, 'prices': bittorrent_2_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'matic-network': {'percentage': .25, 'prices': matic_network_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'celer-network': {'percentage': .25, 'prices': celer_network_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    'fetch-ai': {'percentage': .25, 'prices': fetch_ai_prices, 'balance': 0, 'value': 0, 'difference': 0},
-    }
-
 usd_prices = {
     '01-05-2019': 1,
     '02-05-2019': 1,
@@ -881,3 +858,25 @@ fetch_ai_prices = {
     '09-06-2019': 0.21395592001373634,
     }
 
+coin_prices = { 
+    'usd': usd_prices,
+    'bitcoin': bitcoin_prices,
+    'ethereum': ethereum_prices,
+    'binance': binancecoin_prices,
+    'neo': neo_prices,
+    'litecoin': litecoin_prices,
+    'ontology': ontology_prices,
+    'eos': eos_prices,
+    'pundi-x': pundi_x_prices,
+    'bitcoin-cash': bitcoin_cash_prices,
+    'cardano': cardano_prices,
+    'tron': tron_prices,
+    'cosmos': cosmos_prices,
+    'nem': nem_prices,
+    'ravencoin': ravencoin_prices,
+    'gxchain': gxchain_prices,
+    'bittorrent-2': bittorrent_2_prices,
+    'matic-network': matic_network_prices,
+    'celer-network': celer_network_prices,
+    'fetch-ai': fetch_ai_prices,
+    }
