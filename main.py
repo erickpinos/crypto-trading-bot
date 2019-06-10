@@ -65,7 +65,7 @@ date_1 = datetime.datetime(2019, 6, 1)
 
 #bitcoin_held = balance / bitcoin_price
 #print(bitcoin_held)
-def run(coin_1,percentage_1,coin_2,percentage_2,start_date,end_date):
+def run(coin_1,percentage_1,coin_2,percentage_2,start_date,end_date, strategy):
 
     day = 1
     datetime_start_date = datetime.datetime.strptime(start_date, '%d-%m-%Y')
@@ -86,21 +86,80 @@ def run(coin_1,percentage_1,coin_2,percentage_2,start_date,end_date):
 
     #coin_info = cg.get_coin_history_by_id(coin, start_date)
 
-    while datetime_1 != datetime_end_date + datetime.timedelta(days=1):
-        print(datetime_1.strftime("%d-%m-%Y"))
-        balance = usd_held + bitcoin_held * bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
-        print("- Day", day)
-        print("- Bitcoin price is :", bitcoin_price.get(datetime_1.strftime("%d-%m-%Y")))
-        print("- Portfolio value is", balance, "USD")
-        datetime_1 = datetime_1 + datetime.timedelta(days=1)
-        day += 1
-     #   bitcoin_value = bitcoin_price * bitcoin_held
+    if strategy == 'bnh':
+        while datetime_1 != datetime_end_date + datetime.timedelta(days=1):
+            print(datetime_1.strftime("%d-%m-%Y"))
+            balance = usd_held + bitcoin_held * bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
+            print("- Day", day)
+            print("- Bitcoin price is :", bitcoin_price.get(datetime_1.strftime("%d-%m-%Y")))
+            print("- Portfolio value is", balance, "USD")
+            datetime_1 = datetime_1 + datetime.timedelta(days=1)
+            day += 1
+         #   bitcoin_value = bitcoin_price * bitcoin_held
+
+    if strategy == 'rebalance_daily':
+        while datetime_1 != datetime_end_date + datetime.timedelta(days=1):
+            # Before rebalance
+            print(datetime_1.strftime("%d-%m-%Y"))
+            usd_value = usd_held
+            bitcoin_value = bitcoin_held * bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
+            balance = usd_value + bitcoin_value
+            print("- Day", day)
+            print("- Bitcoin price is :", bitcoin_price.get(datetime_1.strftime("%d-%m-%Y")))
+            print("- Bitcoin value is :", bitcoin_value)
+            print("- USD value is is :", usd_value)
+            print("- Portfolio value is", balance, "USD")
+
+            # Rebalance
+            dif = usd_value - bitcoin_value
+            target_value = balance / 2
+            print("- Target value is", target_value)
+            bitcoin_difference = target_value - bitcoin_value
+            usd_difference = target_value - usd_value
+            print("- Bitcoin difference", bitcoin_difference)
+            print("- USD difference", usd_difference)
+
+            if bitcoin_value < usd_value:
+                purchase_bitcoin = bitcoin_difference / bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
+                print("bought ", purchase_bitcoin, "bitcoin for", bitcoin_difference, "USD")
+                bitcoin_held += purchase_bitcoin
+                usd_held -= bitcoin_difference
+
+            if bitcoin_value > usd_value:
+                bitcoin_sold = bitcoin_difference / bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
+                print("sold ", bitcoin_sold, "bitcoin for", bitcoin_difference, "USD")
+                bitcoin_held += bitcoin_sold
+                usd_held -= bitcoin_difference
+                
+            # After rebalance
+            print("After rebalance")
+            usd_value = usd_held
+            bitcoin_value = bitcoin_held * bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
+            balance = usd_value + bitcoin_value
+            print("- Bitcoin value is :", bitcoin_value)
+            print("- USD value is is :", usd_value)
+            print("- Portfolio value is", balance, "USD")
+            datetime_1 = datetime_1 + datetime.timedelta(days=1)
+            day += 1
+         #   bitcoin_value = bitcoin_price * bitcoin_held
+
+    return balance
 
 x = 'bitcoin'
 y = '01-06-2019'
 z = '09-06-2019'
 #get_prices(x,y,z)
-run('usd',1,'bitcoin',0,y,z)
+
+strategy_1 = run('usd',1,'bitcoin',0,y,z, 'bnh')
+strategy_2 = run('usd',0,'bitcoin',1,y,z, 'bnh')
+strategy_3 = run('usd',.5,'bitcoin',.5,y,z, 'bnh')
+strategy_4 = run('usd',.5,'bitcoin',.5,y,z, 'rebalance_daily')
+
+print('buy and hold usd', strategy_1)
+print('buy and hold btc', strategy_2)
+print('buy and hold 50% usd and 50% btc', strategy_3)
+print('rebalance 50% usd and 50% btc', strategy_4)
+
 
 #Buy and hold strategy
 #def buy_and_hold(coin_1,percentage_1,coin_2,percentage_2):
