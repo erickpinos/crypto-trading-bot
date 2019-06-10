@@ -161,9 +161,40 @@ def print_dict(coin, date_str):
     for key in coin_info:
         print(key, " = ", bitcoin.get(key))
 
-# Run the strategy
-def run_strategy(portfolio,start_date_str,end_date_str, strategy):
+# Buy and hold strategy
+def run_strategy_bnh(portfolio,start_date_str,end_date_str):
+    day = 1
+    start_date = datetime.datetime.strptime(start_date_str, '%d-%m-%Y')
+    end_date = datetime.datetime.strptime(end_date_str, '%d-%m-%Y') 
+    date = start_date
 
+    balance = 1000
+    portfolio_value = balance
+    
+    print("Starting portfolio value: " + format(portfolio_value))
+ 
+    while date != end_date + datetime.timedelta(days=1):
+        portfolio_value = 0
+        date_str = date.strftime("%d-%m-%Y")
+        print("Day " + format(day) + ": " + date_str)
+
+        for key in portfolio:
+            balance = portfolio.get(key).get('balance')
+            prices = portfolio.get(key).get('prices')
+            price = prices.get(date.strftime("%d-%m-%Y"))
+            value = balance * price
+            print("- " + format(key) + " balance: " + format(balance))
+            print("- " + format(key) + " price: " + format(price))
+            print("- " + format(key) + " value: " + format(value))
+            portfolio_value += value
+
+        print("- Total portfolio value: ", portfolio_value, "USD")
+        print("\n")
+        date = date + datetime.timedelta(days=1)
+        day += 1
+
+# Rebalance strategy
+def run_strategy_rebalance(portfolio,start_date_str,end_date_str):
     day = 1
     start_date = datetime.datetime.strptime(start_date_str, '%d-%m-%Y')
     end_date = datetime.datetime.strptime(end_date_str, '%d-%m-%Y') 
@@ -173,97 +204,72 @@ def run_strategy(portfolio,start_date_str,end_date_str, strategy):
     portfolio_value = balance
 
     print("Starting portfolio value: " + format(portfolio_value))
+    
+    while date != end_date + datetime.timedelta(days=1):
 
-#    for key in portfolio:
-#        percentage = portfolio.get(key).get('percentage')
-#        prices = portfolio.get(key).get('prices')
-#        price = prices.get(date.strftime("%d-%m-%Y"))
-#        amount_bought = balance * percentage / price
-#        print("Bought " + format(amount_bought) + " " + key + " at " + format(price))
-#        portfolio[key]['balance'] = amount_bought
-#        portfolio[key]['value'] = amount_bought * price
+        date_str = date.strftime("%d-%m-%Y")
+        print("Day " + format(day) + ": " + date_str)
+
+        # Get total value
+        portfolio_value = 0
+        for key in portfolio:
+            balance = portfolio.get(key).get('balance')
+            prices = portfolio.get(key).get('prices')
+            price = prices.get(date.strftime("%d-%m-%Y"))
+            value = balance * price
+            print("- " + format(key) + " balance: " + format(balance))
+            print("- " + format(key) + " price: " + format(price))
+            print("- " + format(key) + " value: " + format(value))
+
+            portfolio[key]['value'] = value
+            portfolio_value += value
+
+        print("- Total portfolio value is " + format(portfolio_value))
+
+        for key in portfolio:
+
+            #Before rebalance
+            percentage = portfolio.get(key).get('percentage')
+            balance = portfolio.get(key).get('balance')
+            prices = portfolio.get(key).get('prices')
+            value = portfolio.get(key).get('value')
+            price = prices.get(date.strftime("%d-%m-%Y"))
+            print("- " + format(key) + " balance: " + format(balance))
+            print("- " + format(key) + " price: " + format(price))
+            print("- " + format(key) + " value: " + format(value))
+
+            target_value = portfolio_value * percentage
+            print("- Target value is", target_value)
+
+            #Rebalance
+            difference = target_value - value
+            portfolio[key]['difference'] = difference
+            print("- " + format(key) + " difference: " + format(difference))
+
+            change = difference / price
+            portfolio[key]['balance'] += change
+            print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
+
+            balance = portfolio.get(key).get('balance')
+            portfolio[key]['value'] = balance * price
+            value = portfolio.get(key).get('value')
+            portfolio[key]['difference'] = 0
+            print("- " + key + " value: " + format(value))
+
+        print("- Total portfolio value: ", portfolio_value, "USD")
+        print("\n")
+
+        date = date + datetime.timedelta(days=1)
+        day += 1
+
+# Run the strategy
+def run_strategy(portfolio,start_date_str,end_date_str, strategy):
     
     if strategy == 'bnh':
-        while date != end_date + datetime.timedelta(days=1):
-            portfolio_value = 0
-            date_str = date.strftime("%d-%m-%Y")
-            print("Day " + format(day) + ": " + date_str)
-
-            for key in portfolio:
-                balance = portfolio.get(key).get('balance')
-                prices = portfolio.get(key).get('prices')
-                price = prices.get(date.strftime("%d-%m-%Y"))
-                value = balance * price
-                print("- " + format(key) + " balance: " + format(balance))
-                print("- " + format(key) + " price: " + format(price))
-                print("- " + format(key) + " value: " + format(value))
-                portfolio_value += value
-
-            print("- Total portfolio value: ", portfolio_value, "USD")
-            print("\n")
-            date = date + datetime.timedelta(days=1)
-            day += 1
+        run_strategy_bnh(portfolio,start_date_str,end_date_str)
 
     if strategy == 'rebalance_daily':
-
-        while date != end_date + datetime.timedelta(days=1):
-
-            date_str = date.strftime("%d-%m-%Y")
-            print("Day " + format(day) + ": " + date_str)
-
-            # Get total value
-            portfolio_value = 0
-            for key in portfolio:
-                balance = portfolio.get(key).get('balance')
-                prices = portfolio.get(key).get('prices')
-                price = prices.get(date.strftime("%d-%m-%Y"))
-                value = balance * price
-                print("- " + format(key) + " balance: " + format(balance))
-                print("- " + format(key) + " price: " + format(price))
-                print("- " + format(key) + " value: " + format(value))
-
-                portfolio[key]['value'] = value
-                portfolio_value += value
-
-            print("- Total portfolio value is " + format(portfolio_value))
-
-            for key in portfolio:
-
-                #Before rebalance
-                percentage = portfolio.get(key).get('percentage')
-                balance = portfolio.get(key).get('balance')
-                prices = portfolio.get(key).get('prices')
-                value = portfolio.get(key).get('value')
-                price = prices.get(date.strftime("%d-%m-%Y"))
-                print("- " + format(key) + " balance: " + format(balance))
-                print("- " + format(key) + " price: " + format(price))
-                print("- " + format(key) + " value: " + format(value))
-
-                target_value = portfolio_value * percentage
-                print("- Target value is", target_value)
-
-                #Rebalance
-                difference = target_value - value
-                portfolio[key]['difference'] = difference
-                print("- " + format(key) + " difference: " + format(difference))
-
-                change = difference / price
-                portfolio[key]['balance'] += change
-                print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
-
-                balance = portfolio.get(key).get('balance')
-                portfolio[key]['value'] = balance * price
-                value = portfolio.get(key).get('value')
-                portfolio[key]['difference'] = 0
-                print("- " + key + " value: " + format(value))
-
-            print("- Total portfolio value: ", portfolio_value, "USD")
-            print("\n")
-
-            date = date + datetime.timedelta(days=1)
-            day += 1
-
-    return balance
+        run_strategy_rebalance(portfolio,start_date_str,end_date_str)
 
 start_date = '01-05-2019'
 end_date = '05-05-2019'
@@ -286,7 +292,7 @@ def display_portfolio(portfolio):
 def run():
     display_portfolio(portfolio)
 #    strategy_1 = run_strategy(portfolio, y, z, 'bnh')
-    strategy_2 = run_strategy(portfolio, start_date, end_Date, 'rebalance_daily')
+    strategy_2 = run_strategy(portfolio, start_date, end_date, 'rebalance_daily')
 
 #    print('buy and hold usd', strategy_1)
     print('rebalance', strategy_2)
