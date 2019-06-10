@@ -161,12 +161,6 @@ def print_dict(coin, date_str):
     for key in coin_info:
         print(key, " = ", bitcoin.get(key))
 
-portfolio = { 
-    'usd': {'percentage': .4, 'prices': usd_price, 'balance': 0, 'value': 0, 'difference': 0},
-    'bitcoin': {'percentage': .3, 'prices': bitcoin_price, 'balance': 0, 'value': 0, 'difference': 0},
-    'ethereum': {'percentage': .3, 'prices': ethereum_price, 'balance': 0, 'value': 0, 'difference': 0},
-    }
-
 # Run the strategy
 def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date_str, strategy):
 
@@ -179,21 +173,15 @@ def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date
     portfolio_value = balance
 
     print("Starting portfolio value: " + format(portfolio_value))
-        
-    portfolio_percentage = .5
 
-    # Initial purchases
-
-    balances = {}
-
-    for key in portfolio:
-        percentage = portfolio.get(key).get('percentage')
-        prices = portfolio.get(key).get('prices')
-        price = prices.get(date.strftime("%d-%m-%Y"))
-        amount_bought = balance * percentage / price
-        print("Bought " + format(amount_bought) + " " + key + " at " + format(price))
-        portfolio[key]['balance'] = amount_bought
-        portfolio[key]['value'] = amount_bought * price
+#    for key in portfolio:
+#        percentage = portfolio.get(key).get('percentage')
+#        prices = portfolio.get(key).get('prices')
+#        price = prices.get(date.strftime("%d-%m-%Y"))
+#        amount_bought = balance * percentage / price
+#        print("Bought " + format(amount_bought) + " " + key + " at " + format(price))
+#        portfolio[key]['balance'] = amount_bought
+#        portfolio[key]['value'] = amount_bought * price
     
     if strategy == 'bnh':
         while date != end_date + datetime.timedelta(days=1):
@@ -217,16 +205,14 @@ def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date
             day += 1
 
     if strategy == 'rebalance_daily':
+
         while date != end_date + datetime.timedelta(days=1):
 
-            # Before rebalance
-            portfolio_value = 0
             date_str = date.strftime("%d-%m-%Y")
             print("Day " + format(day) + ": " + date_str)
 
-            target_value = portfolio_value / 2
-            print("- Target value is", target_value)
-
+            # Get total value
+            portfolio_value = 0
             for key in portfolio:
                 balance = portfolio.get(key).get('balance')
                 prices = portfolio.get(key).get('prices')
@@ -235,25 +221,45 @@ def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date
                 print("- " + format(key) + " balance: " + format(balance))
                 print("- " + format(key) + " price: " + format(price))
                 print("- " + format(key) + " value: " + format(value))
+
+                portfolio[key]['value'] = value
                 portfolio_value += value
 
-                difference = target_value - portfolio.get(key).get('value')
+            print("- Total portfolio value is " + format(portfolio_value))
+
+            for key in portfolio:
+
+                #Before rebalance
+                percentage = portfolio.get(key).get('percentage')
+                balance = portfolio.get(key).get('balance')
+                prices = portfolio.get(key).get('prices')
+                value = portfolio.get(key).get('value')
+                price = prices.get(date.strftime("%d-%m-%Y"))
+                print("- " + format(key) + " balance: " + format(balance))
+                print("- " + format(key) + " price: " + format(price))
+                print("- " + format(key) + " value: " + format(value))
+
+                target_value = portfolio_value * percentage
+                print("- Target value is", target_value)
+
+                #Rebalance
+                difference = target_value - value
                 portfolio[key]['difference'] = difference
-                print(format(key) + " difference: " + format(difference))
+                print("- " + format(key) + " difference: " + format(difference))
 
                 change = difference / price
-                print("acquired " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
                 portfolio[key]['balance'] += change
                 portfolio['usd']['balance'] -= difference
+                print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
 
-               # After rebalance
-                print("After rebalance")
-                for key in portfolio:
-                    portfolio[key][value] = balance * price
-                    print("- " + key + " value: " + format(portfolio[key]['value']))
+                balance = portfolio.get(key).get('balance')
+                value = portfolio.get(key).get('value')
+                portfolio[key][value] = balance * price
+                print("- " + key + " value: " + format(portfolio[key]['value']))
 
             print("- Total portfolio value: ", portfolio_value, "USD")
             print("\n")
+
             date = date + datetime.timedelta(days=1)
             day += 1
 
@@ -270,14 +276,20 @@ y = '01-05-2019'
 z = '04-05-2019'
 #get_prices(x,y,z)
 
+
+portfolio = { 
+    'usd': {'percentage': .5, 'prices': usd_price, 'balance': 1000, 'value': 1000, 'difference': 0},
+    'bitcoin': {'percentage': .5, 'prices': bitcoin_price, 'balance': 0, 'value': 0, 'difference': 0},
+    }
+
 # Run the simulation
 def run():
-    strategy_1 = run_strategy('usd',1,'bitcoin',0,y,z, 'bnh')
+#    strategy_1 = run_strategy('usd',1,'bitcoin',0,y,z, 'bnh')
 #    strategy_2 = run_strategy('usd',0,'bitcoin',1,y,z, 'bnh')
 #    strategy_3 = run_strategy('usd',.5,'bitcoin',.5,y,z, 'bnh')
     strategy_4 = run_strategy('usd',.5,'bitcoin',.5,y,z, 'rebalance_daily')
 
-    print('buy and hold usd', strategy_1)
+#    print('buy and hold usd', strategy_1)
 #    print('buy and hold btc', strategy_2)
 #    print('buy and hold 50% usd and 50% btc', strategy_3)
     print('rebalance 50% usd and 50% btc', strategy_4)
