@@ -5,6 +5,49 @@ import time
 cg = CoinGeckoAPI()
 
 # Cryptocurrency prices
+usd_price = {
+    '01-05-2019': 1,
+    '02-05-2019': 1,
+    '03-05-2019': 1,
+    '04-05-2019': 1,
+    '05-05-2019': 1,
+    '06-05-2019': 1,
+    '07-05-2019': 1,
+    '08-05-2019': 1,
+    '09-05-2019': 1,
+    '10-05-2019': 1,
+    '11-05-2019': 1,
+    '12-05-2019': 1,
+    '13-05-2019': 1,
+    '14-05-2019': 1,
+    '15-05-2019': 1,
+    '16-05-2019': 1,
+    '17-05-2019': 1,
+    '18-05-2019': 1,
+    '19-05-2019': 1,
+    '20-05-2019': 1,
+    '21-05-2019': 1,
+    '22-05-2019': 1,
+    '23-05-2019': 1,
+    '24-05-2019': 1,
+    '25-05-2019': 1,
+    '26-05-2019': 1,
+    '27-05-2019': 1,
+    '28-05-2019': 1,
+    '29-05-2019': 1,
+    '30-05-2019': 1,
+    '31-05-2019': 1,
+    '01-06-2019': 1,
+    '02-06-2019': 1,
+    '03-06-2019': 1,
+    '04-06-2019': 1,
+    '05-06-2019': 1,
+    '06-06-2019': 1,
+    '07-06-2019': 1,
+    '08-06-2019': 1,
+    '09-06-2019': 1,
+    }
+
 bitcoin_price = {
     '01-05-2019': 5292.803974562054,
     '02-05-2019': 5354.5868001739655,
@@ -46,7 +89,42 @@ bitcoin_price = {
     '07-06-2019': 7821.123897094859,
     '08-06-2019': 8036.108159122215,
     '09-06-2019': 7705.539284064289,
-   }
+    }
+
+ethereum_price = {
+    '01-05-2019': 160.74469184721738,
+    '02-05-2019': 159.48931440238658,
+    '03-05-2019': 160.95718796104512,
+    '04-05-2019': 166.63211526803485,
+    '05-05-2019': 162.83631690744346,
+    '06-05-2019': 162.37013497277283,
+    '07-05-2019': 172.8283284518378,
+    '08-05-2019': 170.09589748059332,
+    '09-05-2019': 170.11063311538186,
+    '10-05-2019': 170.57549417946805,
+    '11-05-2019': 172.68209089135948,
+    '12-05-2019': 196.6901677286205,
+    '13-05-2019': 187.2720183708742,
+    '14-05-2019': 196.0761130134244,
+    '15-05-2019': 218.28460968764938,
+    '16-05-2019': 248.74500426984366,
+    '17-05-2019': 264.90012138907406,
+    '18-05-2019': 243.57049917993308,
+    '19-05-2019': 235.32720134101993,
+    '20-05-2019': 260.59698403060327,
+    '21-05-2019': 251.9614994995826,
+    '22-05-2019': 256.0830401834705,
+    '23-05-2019': 244.54946301361036,
+    '24-05-2019': 244.6460957973966,
+    '25-05-2019': 248.54526290535333,
+    '26-05-2019': 250.82036469745617,
+    '27-05-2019': 266.12218207843597,
+    '28-05-2019': 273.40508817754096,
+    '29-05-2019': 271.227867157993,
+    '30-05-2019': 268.7857564563058,
+    '31-05-2019': 255.37736314606394,
+    '01-06-2019': 268.12603920482644,
+    }
 
 
 # Useful functions
@@ -74,17 +152,23 @@ def get_prices(coin,start_date_str,end_date_str):
         date += datetime.timedelta(days=1)
         time.sleep(1)
  
-    print("   }")
+    print("     }")
 
 # Iterate & print the dict
-def print_dict(coin, date_str)
+def print_dict(coin, date_str):
     coin_info = cg.get_coin_history_by_id(coin, date_str)
 
     for key in coin_info:
         print(key, " = ", bitcoin.get(key))
 
-# Run the simulation
-def run(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date_str, strategy):
+portfolio = {
+    'usd' = [.4,usd_price],
+    'bitcoin' = [.3,bitcoin_price],
+    'ethereum' = [.3,ethereum_price],
+    }
+
+# Run the strategy
+def run_strategy(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date_str, strategy):
 
     day = 1
     start_date = datetime.datetime.strptime(start_date_str, '%d-%m-%Y')
@@ -93,11 +177,24 @@ def run(coin_1,percentage_1,coin_2,percentage_2,start_date_str,end_date_str, str
 
     balance = 1000
 
-    portfolio_percentage = .5
+    for key in portfolio:
+        print(key, " = ", portfolio.get(key))
         
+    portfolio_percentage = .5
+
+    # Initial purchases
+
+    balances = []
+
+    for key in portfolio:
+        print(key, " = ", portfolio.get(key))
+        percentage = portfolio.get(key)
+        balances.append(balance*percentage / key.get(date.strftime("%d-%m-%Y"))
+    
     bitcoin_held = balance*percentage_2 / bitcoin_price.get(date.strftime("%d-%m-%Y"))
 
     usd_held = balance*percentage_1
+
 #    print(bitcoin_held)
     
     print("Bought", bitcoin_held, "bitcoin at", bitcoin_price.get(date.strftime("%d-%m-%Y")), "USD")
@@ -176,15 +273,23 @@ y = '01-5-2019'
 z = '01-06-2019'
 #get_prices(x,y,z)
 
-strategy_1 = run('usd',1,'bitcoin',0,y,z, 'bnh')
-strategy_2 = run('usd',0,'bitcoin',1,y,z, 'bnh')
-strategy_3 = run('usd',.5,'bitcoin',.5,y,z, 'bnh')
-strategy_4 = run('usd',.5,'bitcoin',.5,y,z, 'rebalance_daily')
+portfolio = {
+    'usd' = .5,
+    'bitcoin_price' = .5,
+    'ethereum_price' = 0,
+    }
 
-print('buy and hold usd', strategy_1)
-print('buy and hold btc', strategy_2)
-print('buy and hold 50% usd and 50% btc', strategy_3)
-print('rebalance 50% usd and 50% btc', strategy_4)
+# Run the simulation
+def run():
+    strategy_1 = run_strategy('usd',1,'bitcoin',0,y,z, 'bnh')
+    strategy_2 = run_strategy('usd',0,'bitcoin',1,y,z, 'bnh')
+    strategy_3 = run_strategy('usd',.5,'bitcoin',.5,y,z, 'bnh')
+    strategy_4 = run_strategy('usd',.5,'bitcoin',.5,y,z, 'rebalance_daily')
+
+    print('buy and hold usd', strategy_1)
+    print('buy and hold btc', strategy_2)
+    print('buy and hold 50% usd and 50% btc', strategy_3)
+    print('rebalance 50% usd and 50% btc', strategy_4)
 
 
 #Buy and hold strategy
