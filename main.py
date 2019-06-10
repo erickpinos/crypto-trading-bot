@@ -65,8 +65,7 @@ date_1 = datetime.datetime(2019, 6, 1)
 
 #bitcoin_held = balance / bitcoin_price
 #print(bitcoin_held)
-
-def run(start_date,end_date):
+def run(coin_1,percentage_1,coin_2,percentage_2,start_date,end_date):
 
     day = 1
     datetime_start_date = datetime.datetime.strptime(start_date, '%d-%m-%Y')
@@ -78,9 +77,9 @@ def run(start_date,end_date):
 
     portfolio_percentage = .5
         
-    bitcoin_held = balance*portfolio_percentage / bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
+    bitcoin_held = balance*percentage_2 / bitcoin_price.get(datetime_1.strftime("%d-%m-%Y"))
 
-    usd_held = balance*portfolio_percentage
+    usd_held = balance*percentage_1
 #    print(bitcoin_held)
     
     print("Bought", bitcoin_held, "bitcoin at", bitcoin_price.get(datetime_1.strftime("%d-%m-%Y")), "USD")
@@ -101,9 +100,13 @@ x = 'bitcoin'
 y = '01-06-2019'
 z = '09-06-2019'
 #get_prices(x,y,z)
-run(y,z)
-
+run('usd',1,'bitcoin',0,y,z)
 
 #Buy and hold strategy
-
+#def buy_and_hold(coin_1,percentage_1,coin_2,percentage_2):
+    
 #Rebalance daily to equal weights
+
+#buy_and_hold('usd',1,'bitcoin',0)
+#buy_and_hold('usd',.5,'bitcoin',.5)
+#buy_and_hold('usd',0,'bitcoin',1)
