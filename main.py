@@ -55,18 +55,18 @@ def run_strategy_bnh(portfolio,start_date_str,end_date_str):
         date_str = date.strftime("%d-%m-%Y")
         print("Day " + format(day) + ": " + date_str)
 
-        for key in portfolio:
-            balance = portfolio.get(key).get('balance')
+        for key in portfolio.get('balances'):
+            balance = portfolio.get('balances').get(key)
             prices = coin_prices.get(key)
             price = prices.get(date.strftime("%d-%m-%Y"))
             value = balance * price
-            print("- " + format(key) + " balance: " + format(balance))
-            print("- " + format(key) + " price: " + format(price))
-            print("- " + format(key) + " value: " + format(value))
+#            print("- " + format(key) + " balance: " + format(balance))
+#            print("- " + format(key) + " price: " + format(price))
+#            print("- " + format(key) + " value: " + format(value))
             portfolio_value += value
 
-        print("- Total portfolio value: ", portfolio_value, "USD")
-        print("\n")
+#        print("- Total portfolio value: ", portfolio_value, "USD")
+#        print("\n")
         date = date + datetime.timedelta(days=1)
         day += 1
     return portfolio_value
@@ -74,59 +74,54 @@ def run_strategy_bnh(portfolio,start_date_str,end_date_str):
 def get_portfolio_value(portfolio, date):
     portfolio_value = 0
 
-    for key in portfolio:
-        balance = portfolio.get(key).get('balance')
+    for key in portfolio.get('balances'):
+        balance = portfolio.get('balances').get(key)
         prices = coin_prices.get(key)
         price = prices.get(date.strftime("%d-%m-%Y"))
         value = balance * price
 
-        portfolio[key]['value'] = value
         portfolio_value += value
 
     return portfolio_value
 
 def rebalance(portfolio, date):
 
-    this_portfolio = portfolio.copy()
-    
-    portfolio_value = 0
-    
+#    print("Rebalancing...")
+        
     # Get total value of portfolio
-    portfolio_value = get_portfolio_value(this_portfolio, date)
-#    print("- Total portfolio value is " + format(portfolio_value))
+    portfolio_value = get_portfolio_value(portfolio, date)
+#    print("- Total portfolio value: " + format(portfolio_value))
 
-    for key in portfolio:
+    for key in portfolio.get('balances'):
 
         #Before rebalance
-        percentage = this_portfolio.get(key).get('percentage')
-        balance = this_portfolio.get(key).get('balance')
+        allocation = portfolio.get('allocations').get(key)
+        balance = portfolio.get('balances').get(key)
         prices = coin_prices.get(key)
-        value = this_portfolio.get(key).get('value')
         price = prices.get(date.strftime("%d-%m-%Y"))
+        value = balance * price
+#        print("- " + format(key) + " allocation: " + format(allocation))
 #        print("- " + format(key) + " balance: " + format(balance))
 #        print("- " + format(key) + " price: " + format(price))
 #        print("- " + format(key) + " value: " + format(value))
 
-        target_value = portfolio_value * percentage
+        target_value = portfolio_value * allocation
 #        print("- Target value is", target_value)
 
         #Rebalance
         difference = target_value - value
-        this_portfolio[key]['difference'] = difference
-        #print("- " + format(key) + " difference: " + format(difference))
+#        print("- " + format(key) + " difference: " + format(difference))
 
         change = difference / price
-        this_portfolio[key]['balance'] += change
-        #print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
+        portfolio['balances'][key] += change
+#        print("-* rebalanced " + format(change) + " " + format(key) + " for " + format(difference) + " USD")
 
-        balance = portfolio.get(key).get('balance')
-        this_portfolio[key]['value'] = balance * price
-        value = this_portfolio.get(key).get('value')
-        this_portfolio[key]['difference'] = 0
-        #print("- " + key + " value: " + format(value))
+        balance = portfolio.get('balances').get(key)
+        value = balance * price
+ #       print("- " + key + " value: " + format(value))
 
-#    print("- Total portfolio value: ", portfolio_value, "USD")
-#    print("\n")
+ #   print("- Total portfolio value: ", portfolio_value, "USD")
+ #   print("\n")
 
     return portfolio
 
@@ -139,9 +134,6 @@ def run_strategy_rebalance(portfolio,start_date_str,end_date_str):
     start_date = datetime.datetime.strptime(start_date_str, '%d-%m-%Y')
     end_date = datetime.datetime.strptime(end_date_str, '%d-%m-%Y') 
     date = start_date
-
-    balance = 1000
-    portfolio_value = balance
 
 #    print("Starting portfolio value: " + format(portfolio_value))
     
@@ -159,15 +151,13 @@ def run_strategy_rebalance(portfolio,start_date_str,end_date_str):
     return portfolio_value
 
 # Run the strategy
-def run_strategy(portfolio,start_date_str,end_date_str, strategy):
+def run_strategy(portfolio,start_date,end_date, strategy):
 
-    this_portfolio = portfolio.copy()
+    if strategy == 'buy and hold':
+        portfolio_value = run_strategy_bnh(portfolio,start_date,end_date)
 
-    if strategy == 'bnh':
-        portfolio_value = run_strategy_bnh(this_portfolio,start_date_str,end_date_str)
-
-    if strategy == 'rebalance_daily':
-        portfolio_value = run_strategy_rebalance(this_portfolio,start_date_str,end_date_str)
+    if strategy == 'rebalance daily':
+        portfolio_value = run_strategy_rebalance(portfolio,start_date,end_date)
 
     return portfolio_value
 
@@ -199,67 +189,122 @@ portfolio_1 = {
 
 def construct_portfolios():
     portfolios = []
+    num = 1
 
     coins = ['usd',
              'bitcoin',
              'ethereum',
              'binance',
+             'neo',
+             'litecoin',
+             'ontology',
+             'eos',
+             'pundi-x',
+             'bitcoin-cash',
+             'cardano',
+             'tron',
+             'cosmos',
+             'nem',
+             'ravencoin',
+             'gxchain',
+             'bittorrent-2',
+             'matic-network',
+             'celer-network',
+             'fetch-ai',
              ]
 
-    percentage = 1 / len(coins)
-
-    # Create one asset portfolios
+    # Create one asset portfolios w/ buy and hold strategy
     for main in coins:
         portfolio = {}
-
+        portfolio['allocations'] = {}
+        portfolio['balances'] = {}
+        portfolio['name'] = "Portfolio #" + format(num)
+        portfolio['strategy'] = 'buy and hold'     
         for coin in coins:
-            portfolio[coin] = {}
-            portfolio[coin]['percentage'] = percentage
-            portfolio[coin]['balance'] = 0
-            portfolio[coin]['value'] = 0
-            portfolio[coin]['difference'] = 0
+            portfolio['allocations'][coin] = 0
+            portfolio['balances'][coin] = 0
+        portfolio['allocations'][main] = 1
+        portfolio['balances'][coins[0]] = 1000
 
-        portfolio[main]['balance'] = 100
-        
         portfolios.append(portfolio)
+        num += 1
 
-    print(format(len(portfolios)) + " portfolios constructed")
+    # Create evenly split multi-asset portfolio w/ buy and hold strategy
+    portfolio = {}
+    portfolio['allocations'] = {}
+    portfolio['balances'] = {}
+    allocation = 1 / len(coins)
+        
+    for coin in coins:
+        portfolio['name'] = "Portfolio #" + format(num)
+        portfolio['strategy'] = 'buy and hold'
+        portfolio['allocations'][coin] = allocation
+        portfolio['balances'][coin] = 0
+
+    portfolio['balances'][coins[0]] = 1000
+
+    portfolios.append(portfolio)
+    num += 1
+
+    # Create evenly split multi-asset portfolio w/ rebalance strategy
+    portfolio = {}
+    portfolio['allocations'] = {}
+    portfolio['balances'] = {}
+    allocation = 1 / len(coins)
+        
+    for coin in coins:
+        portfolio['name'] = "Portfolio #" + format(num)
+        portfolio['strategy'] = 'rebalance daily'
+        portfolio['allocations'][coin] = allocation
+        portfolio['balances'][coin] = 0
+
+    portfolio['balances'][coins[0]] = 1000
+
+    portfolios.append(portfolio)
+    num += 1
+
+    print(format(len(portfolios)) + " portfolios constructed" + "\n")
 
     for portfolio in portfolios:
-        display_portfolio(portfolio)
+#        print_portfolio(portfolio)
         print("\n")
 
     return portfolios
 
-def display_portfolio(portfolio):
-    for key in portfolio:
-        print(key)
-        for field in portfolio.get(key):
-            print("- " + format(field) + ": " + format(portfolio.get(key).get(field)))
+def print_portfolio(portfolio):
+    print(format(portfolio.get('name')))
+    print("- Strategy: " + format(portfolio.get('strategy')))
+
+    print("- Allocations:")
+    for coin in portfolio.get('allocations'):
+        print("-- " + format(coin) + ": " + format(portfolio.get('allocations').get(coin)))
+
+    print("- Balances:")
+    for coin in portfolio.get('balances'):
+        print("-- " + format(coin) + ": " + format(portfolio.get('balances').get(coin)))
+
 
 # Run the simulation
 def run():
 
     start_date = '01-06-2019'
-    end_date = '01-06-2019'
+    end_date = '02-06-2019'
 
     results = []
 
     portfolios = construct_portfolios()
 
-    num = 1
+    for portfolio in portfolios:
+        name = portfolio.get('name')
+        strategy = portfolio.get('strategy')
+        print("Running " + strategy + " simulation on " + name)
+        results.append([portfolio, run_strategy(portfolio, start_date, end_date, strategy)])
+        print("\n")
 
-    strategies = ['bnh', 'rebalance_daily']
-    for strategy in strategies:
-        for portfolio in portfolios:
-            print("Portfolio #" + format(num))
-            print(portfolio)
-            display_portfolio(portfolio)
-            results.append(run_strategy(portfolio, start_date, end_date, strategy))
-            num += 1
-            print("\n")
-        
-    print(results)    
+    for result in results:
+        print_portfolio(result[0])
+        print(result[1])
+        print("\n")
 
 def get_lots_of_prices():
     start_date = '01-05-2019'
